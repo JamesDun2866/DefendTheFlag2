@@ -1,0 +1,50 @@
+#cloud-config
+
+# run commands
+# default: none
+# runcmd contains a list of either lists or a string
+# each item will be executed in order at rc.local like level with
+# output to the console
+# - runcmd only runs during the first boot
+# - if the item is a list, the items will be properly executed as if
+#   passed to execve(3) (with the first arg as the command).
+# - if the item is a string, it will be simply written to the file and
+#   will be interpreted by 'sh'
+#
+# Note, that the list has to be proper yaml, so you have to quote
+# any characters yaml would eat (':' can be problematic)
+runcmd:
+ - echo "Started runcmd script at $(date)" >> /Runcmd.txt
+ - apt add-apt-repository universe
+ - echo "Completed 'apt add-apt-repository universe' runcmd script at $(date)" >> /Runcmd.txt
+ - apt -y install zip unzip
+ - echo "Completed 'apt -y install zip unzip' runcmd script at $(date)" >> /Runcmd.txt  
+ - apt -y install rdate python-pyftpdlib
+ - echo "Completed 'apt -y install rdate python-pyftpdlib' runcmd script at $(date)" >> /Runcmd.txt 
+ - git clone "https://github.com/microsoft/DefendTheFlag.git" /usr/bin/DefendTheFlag
+ - echo "Completed 'git clone "https://github.com/microsoft/DefendTheFlag.git" /usr/bin/DefendTheFlag' runcmd script at $(date)" >> /Runcmd.txt 
+ - unzip /usr/bin/DefendTheFlag/Downloads/Ubuntu-Katoolin/kali.zip -d /home/Cookies
+ - echo "Completed 'unzip /usr/bin/DefendTheFlag/Downloads/Ubuntu-Katoolin/kali.zip -d /home/Cookies' runcmd script at $(date)" >> /Runcmd.txt 
+ # add Kali repo to Ubuntu
+ - echo "deb [trusted=yes] http://http.kali.org/kali kali-rolling main contrib non-free" >> /etc/apt/sources.list
+ - sudo apt -y update && sudo apt -y upgrade
+ - echo "Completed 'added Kali.org to sources.list and update/upgrade' runcmd script at $(date)" >> /Runcmd.txt 
+ - sudo apt -y install python3-impacket hydra armitage
+ - echo "Completed 'sudo apt -y install python3-impacket hydra armitage' runcmd script at $(date)" >> /Runcmd.txt 
+ - echo "Ended runcmd script at $(date)" >> /Runcmd.txt
+# boot commands
+# default: none
+# this is very similar to runcmd, but commands run very early
+# in the boot process, only slightly after a 'boothook' would run.
+# bootcmd should really only be used for things that could not be
+# done later in the boot process.  bootcmd is very much like
+# boothook, but possibly with more friendly.
+# - bootcmd will run on every boot
+# - the INSTANCE_ID variable will be set to the current instance id.
+# - you can use 'cloud-init-per' command to help only run once
+bootcmd:
+- echo "Started Bootcmd script at $(date)" >> /Boot.txt
+#  - cd katoolin3/
+#  - chmod +x ./update.sh
+#  - sudo ./update.sh
+- echo "Ended Bootcmd script at $(date)" >> /Boot.txt
